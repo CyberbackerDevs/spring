@@ -49,13 +49,14 @@
 					</div>
 					<div class="d-form-item submitform">
 						<button v-on:click="submitForm();">Submit <span v-if="show_loading"><v-progress-circular indeterminate color="primary"></v-progress-circular></span></button>
+						<div class="disclaimer-section">Disclaimer: Once you fill out this form, you are giving us permission to contact you.</div>
 					</div>
 				</div>
 				<div v-if="show_thank_you" class="d-main-form-inner thank-you-wrapper">
 					<div class="d-thank-you-page">
-						<h2>Thank you for participating!</h2>
+						<h2>Congratulations for completing the first step!</h2>
 						<div class="d-thank-you-content">
-							<p>a gworthbacker will get back to you</p>
+							<p>Please don't walk away from the tablet and expect a call shortly for your<br /><strong>Free Business Evaluation.</strong></p>
 						</div>
 					</div>
 				</div>
@@ -165,7 +166,10 @@ export default {
 			});
 			
 		}
-	}
+	},
+	mounted() {  
+		document.title = "Spring Mastermind 2022 | Cyberbacker";  
+	}, 
 }
 </script>
 
@@ -301,11 +305,39 @@ export default {
 .d-thank-you-content p {
 	font-size: 22px;
     text-align: center;
-    text-transform: capitalize;
+    /* text-transform: capitalize; */
 }
 span.form-is-required {
     color: red;
     font-size: 14px;
     margin-left: 10px;
+}
+.disclaimer-section {
+	font-size: 14px;
+	margin-top: 20px;
+}
+@media only screen and (max-width: 690px) {
+	.d-main-form {
+		width: 100%;
+	}
+	.d-main-header-image img {
+		width: 95%;
+		margin: 0 auto;
+	}
+	.d-main-header-spring {
+		padding: 0;
+		text-align: center;
+		font-size: 60px;
+		margin-bottom: -15px;
+	}
+	.d-main-header-date {
+		padding: 0;
+		text-align: center;
+		margin-top: -12px;
+		font-size: 28px;
+	}
+	.d-main-header-mastermind {
+		font-size: 54px;
+	}
 }
 </style>
