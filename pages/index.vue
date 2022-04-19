@@ -16,39 +16,47 @@
 				</div>
 			</div>
 			<div class="d-main-form">
-				<div class="d-main-form-inner">
+				<div v-if="!show_thank_you" class="d-main-form-inner">
 					<div class="d-form-item">
-						<label for="">Full Name</label>
-						<input type="text" >
+						<label for="">Full Name <span v-if="error_name" class="form-is-required">*required</span></label>
+						<input type="text" v-model="form.name">
 					</div>
 					<div class="d-form-item">
-						<label for="">Mobile Number</label>
-						<input type="text" >
+						<label for="">Mobile Number <span v-if="error_mobile" class="form-is-required">*required</span></label>
+						<input type="text" v-model="form.mobile">
 					</div>
 					<div class="d-form-item">
-						<label for="">Email Address</label>
-						<input type="text" >
+						<label for="">Email Address <span v-if="error_email" class="form-is-required">*required</span></label>
+						<input type="text" v-model="form.email">
 					</div>
 					<div class="d-form-item">
 						<label for="">Job Title</label>
-						<input type="text" >
+						<input type="text" v-model="form.job_title">
 					</div>
 					<div class="d-form-item">
-						<label for="">State</label>
-						<select name="" id="">
+						<label for="">State <span v-if="error_state" class="form-is-required">*required</span></label>
+						<select name="" id="" v-model="form.state">
 							<option :value="state" v-for="state in states" :key="state">{{state}}</option>
 						</select>
 					</div>
 					<div class="d-form-item">
-						<label for="">County</label>
-						<input type="text" >
+						<label for="">County <span v-if="error_county" class="form-is-required">*required</span></label>
+						<input type="text" v-model="form.county">
 					</div>
 					<div class="d-form-item">
-						<label for="">Country</label>
-						<input type="text" >
+						<label for="">Country <span v-if="error_country" class="form-is-required">*required</span></label>
+						<input type="text" v-model="form.country">
 					</div>
 					<div class="d-form-item submitform">
-						<button>Submit</button>
+						<button v-on:click="submitForm();">Submit <span v-if="show_loading"><v-progress-circular indeterminate color="primary"></v-progress-circular></span></button>
+					</div>
+				</div>
+				<div v-if="show_thank_you" class="d-main-form-inner thank-you-wrapper">
+					<div class="d-thank-you-page">
+						<h2>Thank you for participating!</h2>
+						<div class="d-thank-you-content">
+							<p>a gworthbacker will get back to you</p>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -57,11 +65,30 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
 	name: 'IndexPage',
 	layout: "base",
 	data(){
 		return {
+			show_thank_you: false,
+			show_loading: false,
+			error_name: false,
+			error_email: false,
+			error_mobile: false,
+			error_state: false,
+			error_county: false,
+			error_country: false,
+			form: {
+				'name': '',
+				'email': '',
+				'mobile': '',
+				'state': '',
+				'county': '',
+				'job_title': '',
+				'country': '',
+			},
 			states: [
 				'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut',
 				'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas',
@@ -71,6 +98,72 @@ export default {
 				'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 
 				'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
 			]
+		}
+	},
+	methods: {
+		submitForm(){
+			console.log('process info -> ', this.form);
+			this.show_loading = true;
+
+			// validation
+			let isHasError = false;
+			this.error_name = false;
+			this.error_email = false;
+			this.error_mobile = false;
+			this.error_state = false;
+			this.error_county = false;
+			this.error_country = false;
+
+			if(this.form.name == ''){
+				this.error_name = true;
+				isHasError = true;
+			}
+
+			if(this.form.email == ''){
+				this.error_email = true;
+				isHasError = true;
+			}
+
+			if(this.form.mobile == ''){
+				this.error_mobile = true;
+				isHasError = true;
+			}
+
+			if(this.form.state == ''){
+				this.error_state = true;
+				isHasError = true;
+			}
+
+			if(this.form.county == ''){
+				this.error_county = true;
+				isHasError = true;
+			}
+
+			if(this.form.country == ''){
+				this.error_country = true;
+				isHasError = true;
+			}
+
+			if(isHasError){
+				this.show_loading = false;
+				return;
+			}
+
+			// console.log('all fields has been filled');
+			
+
+			// get tab number
+			let dselectedtab = this.$route.query.tablet;
+			// console.log(dselectedtab);
+			this.form.gsheet_id = "Tablet "+dselectedtab;
+
+			axios.post("https://be.applytocyberbacker.com/api/mastermind/savetogsheet", this.form)
+    		.then((response) => {
+				// console.log('saving response -> ', response);
+				this.show_loading = false;
+				this.show_thank_you = true;
+			});
+			
 		}
 	}
 }
@@ -196,5 +289,23 @@ export default {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 12px #8f8fc1;
+}
+.thank-you-wrapper {
+	margin-bottom: 160px;
+}
+.d-thank-you-page h2 {
+	text-align: center;
+	font-size: 32px;
+    margin-bottom: 30px;
+}
+.d-thank-you-content p {
+	font-size: 22px;
+    text-align: center;
+    text-transform: capitalize;
+}
+span.form-is-required {
+    color: red;
+    font-size: 14px;
+    margin-left: 10px;
 }
 </style>
