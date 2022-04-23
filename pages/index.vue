@@ -4,7 +4,7 @@
 		<div class="d-main-form">
 			<div class="d-main-page-inner">
 				<div class="d-main-header-image"><img src="@/assets/logo.png"/></div>
-				<div class="d-main-header-presents">presents</div>
+				<!-- <div class="d-main-header-presents">presents</div> -->
 				<div class="d-main-header-spring">Spring</div>
 				<div class="d-main-header-mastermind">Mastermind</div>
 				<div class="d-main-header-date">2022</div>
