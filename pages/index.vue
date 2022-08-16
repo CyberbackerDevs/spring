@@ -1,17 +1,17 @@
 <template>
-	<div class="d-main-content" :style="{ backgroundImage: 'url(' + require('@/assets/bg.jpg') + ')' }">
+	<div class="d-main-content" :style="{ backgroundImage: 'url(' + require('@/assets/bgv.jpeg') + ')' }">
 		
 		<div class="d-main-form">
 			<div class="d-main-page-inner">
 				<div class="d-main-header-image"><img src="@/assets/logo.png"/></div>
 				<!-- <div class="d-main-header-presents">presents</div> -->
-				<div class="d-main-header-spring">Spring</div>
-				<div class="d-main-header-mastermind">Mastermind</div>
-				<div class="d-main-header-date">2022</div>
+				<!-- <div class="d-main-header-spring">Inman</div> -->
+				<div class="d-main-header-mastermind">Inman Connect</div>
+				<div class="d-main-header-date">Las Vegas</div>
 			</div>	
 			<div class="d-main-into">
 				<div class="d-main-into-inner">
-					<p>Cyberbacker is one of the leading providers of virtual support services across all industries. We are committed to freeing up your time to focus on your one thing—growth. Don’t hold your business back by wearing different hats. Fill out the form to get started!</p>
+					<p>Six months down this 2022 and everything’s moving fast. Cyberbacker is ready to climb up towards success with you. Join us as we connect you with the best people from our company at the INMAN event in Las Vegas! We consistently convert transactions into relationships. Make great things happen with Cyberbacker!</p>
 					<p>For audio, please fill out this form, stay near the tablet and i will call you</p>
 				</div>
 			</div>
@@ -34,6 +34,36 @@
 						<input type="text" v-model="form.job_title">
 					</div>
 					<div class="d-form-item">
+						<label for="">Industry <span v-if="error_email" class="form-is-required">*required</span></label>
+						<select v-model="form.industry" @change="onIndustryChange($event)" name="" id="">
+							<option value="Real estate agent">Real estate agent</option>
+							<option value="Mortgage">Mortgage</option>
+							<option value="Title">Title</option>
+							<option value="CRM">CRM</option>
+							<option value="Technology">Technology</option>
+							<option value="Marketing/Social Media">Marketing/Social Media</option>
+							<option value="Lead Generation">Lead Generation</option>
+							<option value="Home Warranty">Home Warranty</option>
+							<option value="Insurance">Insurance</option>
+							<option value="E-commerce">E-commerce</option>
+							<option value="Travel/Tourism">Travel/Tourism</option>
+							<option value="Education">Education</option>
+							<option value="Financial">Financial</option>
+							<option value="Office/Administration">Office/Administration</option>
+							<option value="Human Resources">Human Resources</option>
+							<option value="Tax Consulting">Tax Consulting</option>
+							<option value="Healthcare">Healthcare</option>
+							<option value="Arts/Entertainment">Arts/Entertainment</option>
+							<option value="Retail">Retail</option>
+							<option value="Other">Other</option>
+						</select>
+						<!-- <input type="text" v-model="form.email"> -->
+					</div>
+					<div class="d-form-item" v-if="show_other_industry">
+						<label for="">Other Industry</label>
+						<input type="text" v-model="other_industry" placeholder="Enter other industry">
+					</div>
+					<div class="d-form-item">
 						<label for="">State <span v-if="error_state" class="form-is-required">*required</span></label>
 						<select name="" id="" v-model="form.state">
 							<option :value="state" v-for="state in states" :key="state">{{state}}</option>
@@ -49,14 +79,15 @@
 					</div>
 					<div class="d-form-item submitform">
 						<button v-on:click="submitForm();">Submit <span v-if="show_loading"><v-progress-circular indeterminate color="primary"></v-progress-circular></span></button>
-						<div class="disclaimer-section">Disclaimer: Once you fill out this form, you are giving us permission to contact you.</div>
+						<div class="disclaimer-section">Disclaimer: Once you fill out this form, you are giving us permission to contact you and will send you emails about cyberbacker.</div>
 					</div>
 				</div>
 				<div v-if="show_thank_you" class="d-main-form-inner thank-you-wrapper">
 					<div class="d-thank-you-page">
 						<h2>Congratulations for completing the first step!</h2>
 						<div class="d-thank-you-content">
-							<p>Please don't walk away from the tablet and expect a call shortly for your<br /><strong>Free Business Evaluation.</strong></p>
+							<!-- <p>Please don't walk away from the tablet and expect a call shortly for your<br /><strong>Free Business Evaluation.</strong></p> -->
+							<p>Please don't walk away from the tablet, one of our amazing growth backers will appear in the tablet shortly.</p>
 						</div>
 					</div>
 				</div>
@@ -73,6 +104,7 @@ export default {
 	layout: "base",
 	data(){
 		return {
+			show_other_industry: false,
 			show_thank_you: false,
 			show_loading: false,
 			error_name: false,
@@ -81,10 +113,12 @@ export default {
 			error_state: false,
 			error_county: false,
 			error_country: false,
+			other_industry: '',
 			form: {
 				'name': '',
 				'email': '',
 				'mobile': '',
+				'industry': '',
 				'state': '',
 				'county': '',
 				'job_title': '',
@@ -150,7 +184,11 @@ export default {
 				return;
 			}
 
-			// console.log('all fields has been filled');
+			if(this.show_other_industry){
+				this.form.industry = this.other_industry;
+			}
+
+			// console.log('all fields has been filled -> ', this.form);
 			
 
 			// get tab number
@@ -158,24 +196,32 @@ export default {
 			// console.log(dselectedtab);
 			this.form.gsheet_id = "Tablet "+dselectedtab;
 
-			axios.post("https://be.applytocyberbacker.com/api/mastermind/savetogsheet", this.form)
+			axios.post("https://be2.applytocyberbacker.com/api/inman/savetogsheet", this.form)
     		.then((response) => {
 				// console.log('saving response -> ', response);
 				this.show_loading = false;
 				this.show_thank_you = true;
 			});
 			
+		},
+		onIndustryChange(event){
+			console.log(event.target.value)
+			if(event.target.value == 'Other'){
+				this.show_other_industry = true;
+			} else {
+				this.show_other_industry = false;
+			}
 		}
 	},
 	mounted() {  
-		document.title = "Spring Mastermind 2022 | Cyberbacker";  
+		document.title = "Inman Connect Las Vegas 2022 | Cyberbacker";  
 	}, 
 }
 </script>
 
 <style scoped>
 .d-main-content {
-	font-family: 'Nunito', sans-serif;
+	font-family: 'Montserrat', sans-serif;
 	height: 100%;
 	background-size: cover;
 	padding: 20px 0 50px;
@@ -190,6 +236,7 @@ export default {
 .d-main-header-image {
 	text-align: center;
 	padding-top: 60px;
+	margin-bottom: 40px;
 }
 .d-main-header-presents {
 	text-align: center;
@@ -216,17 +263,18 @@ export default {
 	text-align: center;
     font-weight: 600;
     text-transform: uppercase;
-    font-size: 88px;
+    font-size: 130px;
     letter-spacing: -6px;
-    color: #3e425f;
-	line-height: 1em;
-	transform: rotate(-4deg);
+    line-height: .8em;
+    transform: rotate(-4deg);
+    text-shadow: 0 0 23px #a193fe;
+    color: #e5e5e5;
 }
 .d-main-header-date {
 	font-family: 'Square Peg', cursive;
 	text-align: right;
     line-height: 1em;
-    font-size: 50px;
+    font-size: 85px;
     margin-top: -42px;
     position: relative;
     z-index: 2;
@@ -235,6 +283,7 @@ export default {
     padding-right: 108px;
     margin-bottom: 50px;
     font-weight: bold;
+	text-shadow: 0px 0px 9px #e010c5;
 }
 .d-main-form-inner {
 	background: #fff;
@@ -251,7 +300,7 @@ export default {
 	display: block;
     font-size: 18px;
     line-height: 1em;
-    font-weight: bold;
+    /* font-weight: bold; */
     margin-bottom: 5px;
 }
 .d-main-form-inner input {
@@ -281,6 +330,7 @@ export default {
 	font-size: 18px;
 	line-height: 1.2em;
 	margin-bottom: 10px;
+	color: #fff;
 }
 .submitform button {
 	font-size: 18px;

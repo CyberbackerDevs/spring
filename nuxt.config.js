@@ -6,8 +6,8 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - spring',
-    title: 'spring',
+    titleTemplate: '%s | Cyberbacker',
+    title: 'Inman Connect Las Vegas 2022',
     htmlAttrs: {
       lang: 'en'
     },
@@ -20,7 +20,8 @@ export default {
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Square+Peg&display=swap'},
-      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600&display=swap'},
+      // { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600&display=swap'},
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Montserrat:wght@100;400;700&display=swap'},
     ]
   },
 
