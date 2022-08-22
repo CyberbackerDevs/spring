@@ -1,21 +1,22 @@
 <template>
-	<div class="d-main-content" :style="{ backgroundImage: 'url(' + require('@/assets/bgv.jpeg') + ')' }">
+	<div class="d-main-content" :style="{ backgroundImage: 'url(' + require('@/assets/bg_black2.png') + ')' }">
 		
 		<div class="d-main-form">
 			<div class="d-main-page-inner">
 				<div class="d-main-header-image"><img src="@/assets/logo.png"/></div>
 				<!-- <div class="d-main-header-presents">presents</div> -->
 				<!-- <div class="d-main-header-spring">Inman</div> -->
-				<div class="d-main-header-mastermind">Inman Connect</div>
-				<div class="d-main-header-date">Las Vegas</div>
+				<div class="d-main-header-mastermind">MEGA CAMP</div>
+				<div class="d-main-header-name">2022</div>
+				<!-- <div class="d-main-header-date">Las Vegas</div> -->
 			</div>	
 			<div class="d-main-into">
 				<div class="d-main-into-inner">
-					<p>Six months down this 2022 and everything’s moving fast. Cyberbacker is ready to climb up towards success with you. Join us as we connect you with the best people from our company at the INMAN event in Las Vegas! We consistently convert transactions into relationships. Make great things happen with Cyberbacker!</p>
-					<p>For audio, please fill out this form, stay near the tablet and i will call you</p>
+					<!-- <p>Six months down this 2022 and everything’s moving fast. Cyberbacker is ready to climb up towards success with you. Join us as we connect you with the best people from our company at the INMAN event in Las Vegas! We consistently convert transactions into relationships. Make great things happen with Cyberbacker!</p> -->
+					<!-- <p>For audio, please fill out this form, stay near the tablet and i will call you</p> -->
 				</div>
 			</div>
-			<div class="d-main-form">
+			<div class="d-main-form-container">
 				<div v-if="!show_thank_you" class="d-main-form-inner">
 					<div class="d-form-item">
 						<label for="">Full Name <span v-if="error_name" class="form-is-required">*required</span></label>
@@ -193,10 +194,20 @@ export default {
 
 			// get tab number
 			let dselectedtab = this.$route.query.tablet;
-			// console.log(dselectedtab);
-			this.form.gsheet_id = "Tablet "+dselectedtab;
+			let dselectedrobot = this.$route.query.robot;
 
-			axios.post("https://be2.applytocyberbacker.com/api/inman/savetogsheet", this.form)
+			if(typeof(dselectedtab) !== 'undefined' && dselectedtab !== null){
+				this.form.gsheet_id = "Tablet "+dselectedtab;
+			}
+
+			if(typeof(dselectedrobot) !== 'undefined' && dselectedrobot !== null){
+				this.form.gsheet_id = "Robot "+dselectedrobot;
+			}
+
+			// console.log('tablet -> ', this.form);
+
+
+			axios.post("https://be2.applytocyberbacker.com/api/megacamp/savetogsheet", this.form)
     		.then((response) => {
 				// console.log('saving response -> ', response);
 				this.show_loading = false;
@@ -214,7 +225,7 @@ export default {
 		}
 	},
 	mounted() {  
-		document.title = "Inman Connect Las Vegas 2022 | Cyberbacker";  
+		document.title = "Mega Camp 2022 | Cyberbacker";  
 	}, 
 }
 </script>
@@ -224,7 +235,7 @@ export default {
 	font-family: 'Montserrat', sans-serif;
 	height: 100%;
 	background-size: cover;
-	padding: 20px 0 50px;
+	padding: 20px 0 0px;
 }
 .d-main-form {
 	width: 680px;
@@ -238,6 +249,8 @@ export default {
 	padding-top: 60px;
 	margin-bottom: 40px;
 }
+
+
 .d-main-header-presents {
 	text-align: center;
     font-weight: 600;
@@ -266,9 +279,21 @@ export default {
     font-size: 130px;
     letter-spacing: -6px;
     line-height: .8em;
-    transform: rotate(-4deg);
+    /* transform: rotate(-4deg); */
     text-shadow: 0 0 23px #a193fe;
     color: #e5e5e5;
+}
+
+.d-main-header-name {
+	text-align: center;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 130px;
+    letter-spacing: -6px;
+    line-height: .8em;
+    text-shadow: 0 0 23px #a193fe;
+    color: #e5e5e5;
+	margin-bottom: 40px;
 }
 .d-main-header-date {
 	font-family: 'Square Peg', cursive;
@@ -286,22 +311,25 @@ export default {
 	text-shadow: 0px 0px 9px #e010c5;
 }
 .d-main-form-inner {
-	background: #fff;
-    padding: 70px;
-    border-radius: 20px;
-    box-shadow: 0 0 12px #fcd9d3;
-    width: 86%;
+	/* background: #fff; */
+	background: url('~@/assets/crash2.png') no-repeat top center;
+    padding: 20px;
+    /* border-radius: 20px; */
+    /* box-shadow: 0 0 12px #fcd9d3; */
+    width: 100%;
     margin: 0 auto;
+	color: #fff;
+	padding-top: 170px;
 }
 .d-form-item {
 	margin-bottom: 20px;
 }
 .d-main-form-inner label {
 	display: block;
-    font-size: 18px;
+    font-size: 16px;
     line-height: 1em;
-    /* font-weight: bold; */
-    margin-bottom: 5px;
+    font-weight: bold;
+    margin-bottom: 10px;
 }
 .d-main-form-inner input {
 	width: 100%;
@@ -311,7 +339,13 @@ export default {
     padding: 15px 15px;
     border-radius: 10px;
 	box-shadow: 0 0 12px #d5b6d6;
+	background: #fff;
 }
+
+.d-main-form-inner select {
+	background: #fff;
+}
+
 .d-main-form-inner select {
 	width: 100%;
     border: 1px solid #404b78;
@@ -332,20 +366,27 @@ export default {
 	margin-bottom: 10px;
 	color: #fff;
 }
+
+.submitform {
+	margin-top: 20px;
+	display: inline-block;
+}
+
 .submitform button {
 	font-size: 18px;
     text-align: center;
     display: block;
     width: 100%;
     text-transform: uppercase;
-    background: #484467;
+    background: #0096eb;
     color: #fff;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 12px #8f8fc1;
+	font-weight: bold;
 }
 .thank-you-wrapper {
-	margin-bottom: 160px;
+	padding-bottom: 160px;
 }
 .d-thank-you-page h2 {
 	text-align: center;
@@ -371,7 +412,7 @@ span.form-is-required {
 		width: 100%;
 	}
 	.d-main-header-image img {
-		width: 95%;
+		width: 85%;
 		margin: 0 auto;
 	}
 	.d-main-header-spring {
@@ -387,7 +428,8 @@ span.form-is-required {
 		font-size: 28px;
 	}
 	.d-main-header-mastermind {
-		font-size: 54px;
+		font-size: 115px;
+    	padding: 0 20px;
 	}
 }
 </style>
